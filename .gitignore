@@ -1,0 +1,4 @@
+*.RData
+*.Rhistory
+output
+setup.R

@@ -87,7 +87,8 @@ for(ii in 1:6) { # get each month's data and append it to the first month's data
   input_csv <- sprintf('yellow_tripsample_%s.csv', substr(file_date, 1, 7))
   input_csv <- file.path(data_dir, input_csv)
   append <- if (ii == 1) "none" else "rows"
-  rxImport(input_csv, input_xdf, colClasses = col_classes, overwrite = TRUE, append = append)
+  rxImport(input_csv, input_xdf, colClasses = col_classes, overwrite = TRUE, 
+    append = append)
   print(input_csv)
 }
 Sys.time() - st # stores the time it took to import

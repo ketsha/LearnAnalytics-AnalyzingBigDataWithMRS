@@ -42,7 +42,8 @@ We will use `nb_order` in a little while, but before we do so, let's use `rxCube
 
 ```{r}
 rxc1 <- rxCube(trip_distance ~ pickup_nb:dropoff_nb, mht_xdf)
-rxc2 <- rxCube(minutes_per_mile ~ pickup_nb:dropoff_nb, mht_xdf, transforms = list(minutes_per_mile = (trip_duration/60)/trip_distance))
+rxc2 <- rxCube(minutes_per_mile ~ pickup_nb:dropoff_nb, mht_xdf, 
+               transforms = list(minutes_per_mile = (trip_duration/60)/trip_distance))
 rxc3 <- rxCube(tip_percent ~ pickup_nb:dropoff_nb, mht_xdf)
 library(dplyr)
 res <- bind_cols(list(rxc1, rxc2, rxc3))
@@ -226,7 +227,7 @@ nb_drop <- ## pull the most common destinations for this neighborhood from `rxcs
 pickup_df <- rxDataStep(mht_xdf, # we leave out outFile and store results in pickup_df
   rowSelection = ## select the relevant subset of the data
   varsToKeep = c("dropoff_nb", "pickup_datetime"),
-  transformObjects = ## a list, used to pass `nb_name` and `nb_drop` to the rowSelection argument
+  transformObjects = ## a list, used to pass `nb_name` and `nb_drop` to rowSelection
   )
 ```
 
@@ -296,7 +297,9 @@ ggplot(res, aes(pickup_dow, pickup_hour)) +
   geom_tile(aes(fill = fare_per_minute), colour = "white") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
   scale_fill_gradient(low = "white", high = "steelblue") +
-  geom_text(aes(label = sprintf('%dK riders\n (%d%% tip)', signif(Counts/1000, 2), round(tip_percent, 0))), size = 2.5) +
+  geom_text(aes(label = sprintf('%dK riders\n (%d%% tip)', 
+                                signif(Counts/1000, 2), round(tip_percent, 0))), 
+            size = 2.5) +
   coord_fixed(ratio = .9)
 ```
 

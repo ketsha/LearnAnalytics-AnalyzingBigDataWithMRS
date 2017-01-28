@@ -26,7 +26,7 @@ rxGetInfo(nyc_xdf, getVarInfo = TRUE, numRows = 5)
 
     ## File name: C:\Data\NYC_taxi\yellow_tripsample_2016.xdf 
     ## Number of observations: 6e+06 
-    ## Number of variables: 23 
+    ## Number of variables: 17 
     ## Number of blocks: 12 
     ## Compression type: zlib 
     ## Variable information: 
@@ -49,16 +49,6 @@ rxGetInfo(nyc_xdf, getVarInfo = TRUE, numRows = 5)
     ## Var 15: tolls_amount, Type: numeric, Low/High: (-12.5000, 905.5400)
     ## Var 16: improvement_surcharge, Type: numeric, Low/High: (-0.3000, 0.7600)
     ## Var 17: total_amount, Type: numeric, Low/High: (-450.8000, 629033.7800)
-    ## Var 18: tip_percent, Type: numeric, Low/High: (-1.0000, 100.0000)
-    ## Var 19: pickup_hour
-    ##        7 factor levels: 1AM-5AM 5AM-9AM 9AM-12PM 12PM-4PM 4PM-6PM 6PM-10PM 10PM-1AM
-    ## Var 20: pickup_dow
-    ##        7 factor levels: Sun Mon Tue Wed Thu Fri Sat
-    ## Var 21: dropoff_hour
-    ##        7 factor levels: 1AM-5AM 5AM-9AM 9AM-12PM 12PM-4PM 4PM-6PM 6PM-10PM 10PM-1AM
-    ## Var 22: dropoff_dow
-    ##        7 factor levels: Sun Mon Tue Wed Thu Fri Sat
-    ## Var 23: trip_duration, Type: integer, Low/High: (-631147949, 11122910)
     ## Data (5 rows starting with row 1):
     ##       pickup_datetime    dropoff_datetime passenger_count trip_distance
     ## 1 2016-06-21 21:33:52 2016-06-21 21:34:40               5          0.40
@@ -78,18 +68,12 @@ rxGetInfo(nyc_xdf, getVarInfo = TRUE, numRows = 5)
     ## 3         40.71445            1         9.0   0.5     0.5       1.50
     ## 4         40.78540            1         8.0   0.5     0.5       2.79
     ## 5         40.72152            1        17.0   0.5     0.5       3.66
-    ##   tolls_amount improvement_surcharge total_amount tip_percent pickup_hour
-    ## 1            0                   0.3         5.16          29    6PM-10PM
-    ## 2            0                   0.3        22.30           0     5AM-9AM
-    ## 3            0                   0.3        11.80          17    10PM-1AM
-    ## 4            0                   0.3        12.09          35    6PM-10PM
-    ## 5            0                   0.3        21.96          22    10PM-1AM
-    ##   pickup_dow dropoff_hour dropoff_dow trip_duration
-    ## 1        Tue     6PM-10PM         Tue            48
-    ## 2        Wed     9AM-12PM         Wed          1656
-    ## 3        Tue     10PM-1AM         Tue           463
-    ## 4        Sun     6PM-10PM         Sun           341
-    ## 5        Fri     10PM-1AM         Sat          1493
+    ##   tolls_amount improvement_surcharge total_amount
+    ## 1            0                   0.3         5.16
+    ## 2            0                   0.3        22.30
+    ## 3            0                   0.3        11.80
+    ## 4            0                   0.3        12.09
+    ## 5            0                   0.3        21.96
 
 Using `rxDataStep`
 ------------------
@@ -107,29 +91,33 @@ In a local compute context, when we run `rxDataStep`, we specify an `inData` arg
 Let's start with a simple transformation for calculating tip percentage.
 
 ``` r
-rxDataStep(nyc_xdf, nyc_xdf, transforms = list(tip_percent = ifelse(fare_amount > 
-    0 & tip_amount < fare_amount, round(tip_amount * 100/fare_amount, 0), NA)), overwrite = TRUE)
+rxDataStep(nyc_xdf, nyc_xdf,
+  transforms = list(
+    tip_percent = ifelse(fare_amount > 0 & tip_amount < fare_amount, 
+                         round(tip_amount * 100 / fare_amount, 0), 
+                         NA)),
+  overwrite = TRUE)
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 9.229 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 8.224 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 5.768 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 6.361 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 6.405 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 6.760 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 6.608 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 5.941 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 6.456 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 7.211 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 7.552 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 6.843 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 5.434 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 4.823 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 3.879 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 4.036 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 4.100 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 4.039 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 4.437 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 4.292 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 4.160 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 4.303 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 4.356 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 4.339 seconds
 
 ``` r
-rxSummary(~tip_percent, nyc_xdf)
+rxSummary( ~ tip_percent, nyc_xdf)
 ```
 
     ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.010 seconds
     ## Rows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.010 seconds
     ## Rows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.013 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.013 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.013 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.013 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.014 seconds
-    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.015 seconds
-    ## Rows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.015 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.014 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.014 seconds
-    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.013 seconds 
-    ## Computation time: 0.164 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.011 seconds
+    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.010 seconds
+    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.012 seconds
+    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.011 seconds 
+    ## Computation time: 0.138 seconds.
 
     ## Call:
     ## rxSummary(formula = ~tip_percent, data = nyc_xdf)
@@ -145,12 +133,15 @@ rxSummary(~tip_percent, nyc_xdf)
 The above transformation was persisted in the data. In other words, there's is now a new column in the data called `tip_percent`. Such a transformation has IO overhead when the data is stored on disk. An alternative approach is to perform the transformation *on the fly* by putting the `transforms` argument directly inside of the `rxSummary` call instead of in a prior `rxDataStep` call. In this case, we don't pay the IO overhead of writing to data on disk.
 
 ``` r
-rxSummary(~tip_percent2, nyc_xdf, transforms = list(tip_percent2 = ifelse(fare_amount > 
-    0 & tip_amount < fare_amount, round(tip_amount * 100/fare_amount, 0), NA)))
+rxSummary( ~ tip_percent2, nyc_xdf,
+           transforms = list(
+            tip_percent2 = ifelse(fare_amount > 0 & tip_amount < fare_amount, 
+                                  round(tip_amount * 100 / fare_amount, 0), 
+                                  NA)))
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.659 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.133 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.161 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.118 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.172 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.114 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.129 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.103 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.119 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.126 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.114 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.281 seconds 
-    ## Computation time: 2.264 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.168 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.167 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.222 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.174 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.380 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.122 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.148 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.135 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.133 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.138 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.160 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.123 seconds 
+    ## Computation time: 2.104 seconds.
 
     ## Call:
     ## rxSummary(formula = ~tip_percent2, data = nyc_xdf, transforms = list(tip_percent2 = ifelse(fare_amount > 
@@ -182,13 +173,16 @@ We can use the `rxCrossTabs` function to get counts for the number of trips per 
 1.  We use `substr` to extract the year and month form `pickup_datetime` and convert them to factors. We can specify any range of values as `levels`, not just what we expect in the data.
 
 ``` r
-rxCrossTabs(~month:year, nyc_xdf, transforms = list(year = as.integer(substr(pickup_datetime, 
-    1, 4)), month = as.integer(substr(pickup_datetime, 6, 7)), year = factor(year, 
-    levels = 2014:2016), month = factor(month, levels = 1:12)))
+rxCrossTabs( ~ month:year, nyc_xdf,
+             transforms = list(
+               year = as.integer(substr(pickup_datetime, 1, 4)),
+               month = as.integer(substr(pickup_datetime, 6, 7)),
+               year = factor(year, levels = 2014:2016),
+               month = factor(month, levels = 1:12)))
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 1.637 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 2.084 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 2.144 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 1.891 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 2.414 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 3.131 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 3.632 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 2.806 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 3.216 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 3.502 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 1.867 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 2.135 seconds 
-    ## Computation time: 30.813 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 1.104 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 1.505 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 1.293 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 1.631 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 2.040 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 1.522 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 1.685 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 1.526 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 1.765 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 1.614 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 1.998 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 1.598 seconds 
+    ## Computation time: 19.615 seconds.
 
     ## Call:
     ## rxCrossTabs(formula = ~month:year, data = nyc_xdf, transforms = list(year = as.integer(substr(pickup_datetime, 
@@ -222,13 +216,16 @@ rxCrossTabs(~month:year, nyc_xdf, transforms = list(year = as.integer(substr(pic
 1.  In this case we first convert `pickup_datetime` form `character` to `datetime` and then extract year and month. Because we're using the `lubridate` package we specify this using the `transformPackages` argument. Note that we can't just put `library(lubridate)` at the top, becuase `rxCrossTabs` is a `RevoScaleR` function and as such it can run not just locally, but also in remote compute contexts where the `lubridate` package will have to be loaded before it can execute.
 
 ``` r
-rxCrossTabs(~month:year, nyc_xdf, transforms = list(date = ymd_hms(pickup_datetime), 
-    year = factor(year(date), levels = 2014:2016), month = factor(month(date), levels = 1:12)), 
-    transformPackages = "lubridate")
+rxCrossTabs( ~ month:year, nyc_xdf,
+             transforms = list(
+               date = ymd_hms(pickup_datetime),
+               year = factor(year(date), levels = 2014:2016),
+               month = factor(month(date), levels = 1:12)),
+             transformPackages = "lubridate")
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 3.591 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 5.556 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 4.392 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 3.777 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 3.267 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 4.437 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 4.735 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 2.934 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 3.236 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 4.237 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 4.024 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 4.800 seconds 
-    ## Computation time: 49.466 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 1.946 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 2.419 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 2.178 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 2.708 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 2.550 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 2.758 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 2.874 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 3.731 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 3.125 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 3.805 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 3.106 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 3.426 seconds 
+    ## Computation time: 35.081 seconds.
 
     ## Call:
     ## rxCrossTabs(formula = ~month:year, data = nyc_xdf, transforms = list(date = ymd_hms(pickup_datetime), 
@@ -270,24 +267,29 @@ For the NYC Taxi data, we are interested in comparing trips based on day of week
 ``` r
 # transformation function for extracting some date and time features
 xforms <- function(data) {
-    wlabels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    cut_levels <- c(1, 5, 9, 12, 16, 18, 22)
-    hour_labels <- c("1AM-5AM", "5AM-9AM", "9AM-12PM", "12PM-4PM", "4PM-6PM", "6PM-10PM", 
-        "10PM-1AM")
-    pickup_datetime <- ymd_hms(data$pickup_datetime, tz = "UTC")
-    pickup_hour <- addNA(cut(hour(pickup_datetime), cut_levels))
-    pickup_dow <- factor(wday(pickup_datetime), levels = 1:7, labels = wlabels)
-    levels(pickup_hour) <- hour_labels
-    dropoff_datetime <- ymd_hms(data$dropoff_datetime, tz = "UTC")
-    dropoff_hour <- addNA(cut(hour(dropoff_datetime), cut_levels))
-    dropoff_dow <- factor(wday(dropoff_datetime), levels = 1:7, labels = wlabels)
-    levels(dropoff_hour) <- hour_labels
-    data$pickup_hour <- pickup_hour
-    data$pickup_dow <- pickup_dow
-    data$dropoff_hour <- dropoff_hour
-    data$dropoff_dow <- dropoff_dow
-    data$trip_duration <- as.integer(as.duration(dropoff_datetime - pickup_datetime))
-    data
+  
+  wlabels <- c('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat')
+  cut_levels <- c(1, 5, 9, 12, 16, 18, 22)
+  hour_labels <- c('1AM-5AM', '5AM-9AM', '9AM-12PM', '12PM-4PM', 
+                   '4PM-6PM', '6PM-10PM', '10PM-1AM')
+  
+  pickup_datetime <- ymd_hms(data$pickup_datetime, tz = "UTC")
+  pickup_hour <- addNA(cut(hour(pickup_datetime), cut_levels))
+  pickup_dow <- factor(wday(pickup_datetime), levels = 1:7, labels = wlabels)
+  levels(pickup_hour) <- hour_labels
+  
+  dropoff_datetime <- ymd_hms(data$dropoff_datetime, tz = "UTC")
+  dropoff_hour <- addNA(cut(hour(dropoff_datetime), cut_levels))
+  dropoff_dow <- factor(wday(dropoff_datetime), levels = 1:7, labels = wlabels)
+  levels(dropoff_hour) <- hour_labels
+  
+  data$pickup_hour <- pickup_hour
+  data$pickup_dow <- pickup_dow
+  data$dropoff_hour <- dropoff_hour
+  data$dropoff_dow <- dropoff_dow
+  data$trip_duration <- as.integer(as.duration(dropoff_datetime - pickup_datetime))
+  
+  data
 }
 ```
 
@@ -295,8 +297,8 @@ Before we apply the transformation to the data, it's usually a good idea to test
 
 ``` r
 library(lubridate)
-Sys.setenv(TZ = "US/Eastern")  # not important for this dataset
-head(xforms(nyc_sample))  # test the function on a data.frame
+Sys.setenv(TZ = "US/Eastern") # not important for this dataset
+head(xforms(nyc_sample)) # test the function on a data.frame
 ```
 
     ##       pickup_datetime    dropoff_datetime passenger_count trip_distance
@@ -341,7 +343,7 @@ We run one last test before applying the transformation. Recall that `rxDataStep
 head(rxDataStep(nyc_sample, transformFunc = xforms, transformPackages = "lubridate"))
 ```
 
-    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.047 seconds
+    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.030 seconds
 
     ##       pickup_datetime    dropoff_datetime passenger_count trip_distance
     ## 1 2016-01-16 19:30:38 2016-01-16 19:44:42               1          2.20
@@ -383,16 +385,17 @@ Everything seems to be working well. This does not guarantee that running the tr
 
 ``` r
 st <- Sys.time()
-rxDataStep(nyc_xdf, nyc_xdf, overwrite = TRUE, transformFunc = xforms, transformPackages = "lubridate")
+rxDataStep(nyc_xdf, nyc_xdf, overwrite = TRUE, transformFunc = xforms, 
+           transformPackages = "lubridate")
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 11.080 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 10.858 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 10.238 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 7.235 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 9.581 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 10.294 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 10.181 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 10.303 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 10.187 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 10.224 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 9.749 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 9.349 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 10.076 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 9.501 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 8.524 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 9.611 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 8.092 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 8.175 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 8.642 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 9.025 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 9.003 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 10.194 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 10.328 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 10.149 seconds
 
 ``` r
 Sys.time() - st
 ```
 
-    ## Time difference of 2.011117 mins
+    ## Time difference of 1.871441 mins
 
 Examining the new columns
 -------------------------
@@ -405,27 +408,27 @@ Let's examine the new columns we created to make sure the transformation more or
 We use the same *formula notation* used by many other R modeling or plotting functions to specify which columns we want summaries for. For example, here we want to see summaries for `pickup_hour` and `pickup_dow` *b**o**t**h**f**a**c**t**o**r**s* and `trip_duration` *n**u**m**e**r**i**c*, *i**n**s**e**c**o**n**d**s*.
 
 ``` r
-rxs1 <- rxSummary(~pickup_hour + pickup_dow + trip_duration, nyc_xdf)
+rxs1 <- rxSummary( ~ pickup_hour + pickup_dow + trip_duration, nyc_xdf)
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.027 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.027 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.028 seconds
-    ## Rows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.027 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.027 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.031 seconds 
-    ## Computation time: 0.346 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.038 seconds
+    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.033 seconds 
+    ## Computation time: 0.406 seconds.
 
 ``` r
 # we can add a column for proportions next to the counts
-rxs1$categorical <- lapply(rxs1$categorical, function(x) cbind(x, prop = round(prop.table(x$Counts), 
-    2)))
+rxs1$categorical <- lapply(rxs1$categorical, 
+  function(x) cbind(x, prop = round(prop.table(x$Counts), 2)))
 rxs1
 ```
 
@@ -473,27 +476,27 @@ rxs1
 Separating two variables by a colon $\`pickup\_dow:pickup\_hour\`$ instead of a plus sign $\`pickup\_dow + pickup\_hour\`$ allows us to get summaries for each combination of the levels of the two factor columns, instead of individual ones.
 
 ``` r
-rxs2 <- rxSummary(~pickup_dow:pickup_hour, nyc_xdf)
+rxs2 <- rxSummary( ~ pickup_dow:pickup_hour, nyc_xdf)
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.012 seconds
-    ## Rows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.019 seconds
-    ## Rows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.018 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.017 seconds
-    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.021 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.019 seconds
-    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.020 seconds
-    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.019 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 0.013 seconds
+    ## Rows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 0.020 seconds
+    ## Rows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 0.020 seconds
+    ## Rows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 0.023 seconds
+    ## Rows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 0.022 seconds
+    ## Rows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 0.019 seconds
+    ## Rows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 0.021 seconds
     ## Rows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 0.018 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.022 seconds
-    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.022 seconds 
-    ## Computation time: 0.249 seconds.
+    ## Rows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 0.019 seconds
+    ## Rows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 0.021 seconds
+    ## Rows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 0.025 seconds 
+    ## Computation time: 0.272 seconds.
 
 ``` r
-rxs2 <- tidyr::spread(rxs2$categorical[[1]], key = "pickup_hour", value = "Counts")
-row.names(rxs2) <- rxs2[, 1]
-rxs2 <- as.matrix(rxs2[, -1])
+rxs2 <- tidyr::spread(rxs2$categorical[[1]], key = 'pickup_hour', value = 'Counts')
+row.names(rxs2) <- rxs2[ , 1]
+rxs2 <- as.matrix(rxs2[ , -1])
 rxs2
 ```
 
@@ -509,7 +512,8 @@ rxs2
 In the above case, the individual counts are not as helpful to us as proportions from those counts, and for comparing across different days of the week, we want the proportions to be based on totals for each column, not the entire table. We ask for proportions based on column totals by passing the 2 to as second argument to the `prop.table` function. We can also visually display the proportions using the `levelplot` function.
 
 ``` r
-levelplot(prop.table(rxs2, 2), cuts = 4, xlab = "", ylab = "", main = "Distribution of taxis by day of week")
+levelplot(prop.table(rxs2, 2), cuts = 4, xlab = "", ylab = "", 
+          main = "Distribution of taxis by day of week")
 ```
 
 ![](images/unnamed-chunk-12-1.png)
@@ -530,20 +534,29 @@ We begin by plotting a map of Manhattan neighborhoods, so we can see the neighbo
 ``` r
 library(rgeos)
 library(maptools)
-nyc_shapefile <- readShapePoly("ZillowNeighborhoods-NY/ZillowNeighborhoods-NY.shp")
+
+nyc_shapefile <- readShapePoly('ZillowNeighborhoods-NY/ZillowNeighborhoods-NY.shp')
 library(stringr)
-mht_shapefile <- subset(nyc_shapefile, str_detect(CITY, "New York City-Manhattan"))
+mht_shapefile <- subset(nyc_shapefile, str_detect(CITY, 'New York City-Manhattan'))
+
 mht_shapefile@data$id <- as.character(mht_shapefile@data$NAME)
 library(ggplot2)
 mht.points <- fortify(gBuffer(mht_shapefile, byid = TRUE, width = 0), region = "NAME")
 library(dplyr)
 mht.df <- inner_join(mht.points, mht_shapefile@data, by = "id")
+
 library(dplyr)
-mht.cent <- mht.df %>% group_by(id) %>% summarize(long = median(long), lat = median(lat))
+  mht.cent <- mht.df %>%
+  group_by(id) %>%
+  summarize(long = median(long), lat = median(lat))
+
 library(ggrepel)
-ggplot(mht.df, aes(long, lat, fill = id)) + geom_polygon() + geom_path(color = "white") + 
-    coord_equal() + theme(legend.position = "none") + geom_text_repel(aes(label = id), 
-    data = mht.cent, size = 3)
+  ggplot(mht.df, aes(long, lat, fill = id)) +
+  geom_polygon() +
+  geom_path(color = "white") +
+  coord_equal() +
+  theme(legend.position = "none") +
+  geom_text_repel(aes(label = id), data = mht.cent, size = 3)
 ```
 
 ![](images/unnamed-chunk-13-1.png)
@@ -560,14 +573,16 @@ To add pick-up neighborhood columns to `nyc_sample`, we need to do as follows: -
 
 ``` r
 # take only the coordinate columns, and replace NAs with 0
-data_coords <- data.frame(long = ifelse(is.na(nyc_sample$pickup_longitude), 0, nyc_sample$pickup_longitude), 
-    lat = ifelse(is.na(nyc_sample$pickup_latitude), 0, nyc_sample$pickup_latitude))
+data_coords <- data.frame(
+  long = ifelse(is.na(nyc_sample$pickup_longitude), 0, nyc_sample$pickup_longitude),
+  lat = ifelse(is.na(nyc_sample$pickup_latitude), 0, nyc_sample$pickup_latitude)
+  )
 # we specify the columns that correspond to the coordinates
-coordinates(data_coords) <- c("long", "lat")
+coordinates(data_coords) <- c('long', 'lat')
 # returns the neighborhoods based on coordinates
 nhoods <- over(data_coords, nyc_shapefile)
 # rename the column names in nhoods
-names(nhoods) <- paste("pickup", tolower(names(nhoods)), sep = "_")
+names(nhoods) <- paste('pickup', tolower(names(nhoods)), sep = '_')
 # combine the neighborhood information with the original data
 nyc_sample <- cbind(nyc_sample, nhoods)
 head(nyc_sample)
@@ -619,10 +634,11 @@ In order to run the above transformation on the whole data, we need to take the 
 
 ``` r
 find_nhoods <- function(data) {
-    # extract pick-up lat and long and find their neighborhoods add only the pick-up
-    # neighborhood and city columns to the data extract drop-off lat and long and
-    # find their neighborhoods add only the drop-off neighborhood and city columns to
-    # the data return the data with the new columns added in
+  # extract pick-up lat and long and find their neighborhoods
+  # add only the pick-up neighborhood and city columns to the data
+  # extract drop-off lat and long and find their neighborhoods
+  # add only the drop-off neighborhood and city columns to the data
+  # return the data with the new columns added in
 }
 ```
 
@@ -630,11 +646,13 @@ Now that we've got our function, it's time to test it. We can do so by running `
 
 ``` r
 # test the function on a data.frame using rxDataStep
-head(rxDataStep(nyc_sample, transformFunc = find_nhoods, transformPackages = c("sp", 
-    "maptools"), transformObjects = list(shapefile = mht_shapefile)))
+head(rxDataStep(nyc_sample, 
+                transformFunc = find_nhoods, 
+                transformPackages = c("sp", "maptools"), 
+                transformObjects = list(shapefile = mht_shapefile)))
 ```
 
-    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.004 seconds
+    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.007 seconds
 
     ## NULL
 
@@ -645,13 +663,19 @@ head(rxDataStep(nyc_sample, transformFunc = find_nhoods, transformPackages = c("
 1.  `rate_code_id` is an `integer` column, so we need to use `as.factor` to covert it into a factor. When converting a column from one type to another, we often cannot overwrite the existing column and must create a new column instead. This is because of how the data is broken up into chunks and by converting a column from one type to another, we get a mismatch between chunks. `payment_type` is already a factor and so it doesn't need to be converted to one. When specifying the levels for `payment_type`, we can limit them to 1 and 2 (corresponding to card and cash) and all other levels wills automatically become NAs.
 
 ``` r
-rxDataStep(nyc_xdf, nyc_xdf, transforms = list(rate_code_id = as.factor(rate_code_id), 
-    rate_code_id = factor(rate_code_id, levels = 1:6, labels = c("standard", "JFK", 
-        "Newark", "Nassau or Westchester", "negotiated", "group ride")), payment_type = factor(payment_type, 
-        levels = 1:2, labels = c("card", "cash"))), overwrite = TRUE)
+rxDataStep(nyc_xdf, nyc_xdf,
+  transforms = list(
+    rate_code_id = as.factor(rate_code_id),
+    rate_code_id = factor(rate_code_id, 
+                          levels = 1:6, 
+                          labels = c('standard', 'JFK', 'Newark', 'Nassau or Westchester', 
+                                     'negotiated', 'group ride')),
+    payment_type = factor(payment_type, levels = 1:2, labels = c('card', 'cash'))
+  ),
+  overwrite = TRUE)
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 6.669 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 5.223 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 6.769 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 7.061 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 6.883 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 5.918 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 7.397 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 6.680 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 5.981 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 6.470 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 7.851 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 5.909 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 8.127 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 5.725 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 6.488 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 6.801 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 7.201 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 7.704 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 6.900 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 7.606 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 7.323 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 6.697 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 7.163 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 7.671 seconds
 
 1.  Because we want to apply the transformation to the large data `nyc_xdf`, we need to make sure that we don't add unnecessary columns and that the columns have the appropriate types.
 
@@ -674,26 +698,26 @@ The shapefile contains a few columns we don't need. The neighborhood column is c
 
 ``` r
 find_nhoods <- function(data) {
-    # extract pick-up lat and long and find their neighborhoods
-    pickup_longitude <- ifelse(is.na(data$pickup_longitude), 0, data$pickup_longitude)
-    pickup_latitude <- ifelse(is.na(data$pickup_latitude), 0, data$pickup_latitude)
-    data_coords <- data.frame(long = pickup_longitude, lat = pickup_latitude)
-    coordinates(data_coords) <- c("long", "lat")
-    nhoods <- over(data_coords, shapefile)
-    # add only the pick-up neighborhood and city columns to the data
-    data$pickup_nhood <- nhoods$NAME
-    data$pickup_borough <- nhoods$CITY
-    # extract drop-off lat and long and find their neighborhoods
-    dropoff_longitude <- ifelse(is.na(data$dropoff_longitude), 0, data$dropoff_longitude)
-    dropoff_latitude <- ifelse(is.na(data$dropoff_latitude), 0, data$dropoff_latitude)
-    data_coords <- data.frame(long = dropoff_longitude, lat = dropoff_latitude)
-    coordinates(data_coords) <- c("long", "lat")
-    nhoods <- over(data_coords, shapefile)
-    # add only the drop-off neighborhood and city columns to the data
-    data$dropoff_nhood <- nhoods$NAME
-    data$dropoff_borough <- nhoods$CITY
-    # return the data with the new columns added in
-    data
+  # extract pick-up lat and long and find their neighborhoods
+  pickup_longitude <- ifelse(is.na(data$pickup_longitude), 0, data$pickup_longitude)
+  pickup_latitude <- ifelse(is.na(data$pickup_latitude), 0, data$pickup_latitude)
+  data_coords <- data.frame(long = pickup_longitude, lat = pickup_latitude)
+  coordinates(data_coords) <- c('long', 'lat')
+  nhoods <- over(data_coords, shapefile)
+  # add only the pick-up neighborhood and city columns to the data
+  data$pickup_nhood <- nhoods$NAME
+  data$pickup_borough <- nhoods$CITY
+  # extract drop-off lat and long and find their neighborhoods
+  dropoff_longitude <- ifelse(is.na(data$dropoff_longitude), 0, data$dropoff_longitude)
+  dropoff_latitude <- ifelse(is.na(data$dropoff_latitude), 0, data$dropoff_latitude)
+  data_coords <- data.frame(long = dropoff_longitude, lat = dropoff_latitude)
+  coordinates(data_coords) <- c('long', 'lat')
+  nhoods <- over(data_coords, shapefile)
+  # add only the drop-off neighborhood and city columns to the data
+  data$dropoff_nhood <- nhoods$NAME
+  data$dropoff_borough <- nhoods$CITY
+  # return the data with the new columns added in
+  data
 }
 ```
 
@@ -701,11 +725,12 @@ find_nhoods <- function(data) {
 
 ``` r
 # test the function on a data.frame using rxDataStep
-head(rxDataStep(nyc_sample, transformFunc = find_nhoods, transformPackages = c("sp", 
-    "maptools"), transformObjects = list(shapefile = nyc_shapefile)))
+head(rxDataStep(nyc_sample, transformFunc = find_nhoods, 
+                transformPackages = c("sp", "maptools"), 
+                transformObjects = list(shapefile = nyc_shapefile)))
 ```
 
-    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.335 seconds
+    ## Rows Read: 1000, Total Rows Processed: 1000, Total Chunk Time: 0.154 seconds
 
     ##       pickup_datetime    dropoff_datetime passenger_count trip_distance
     ## 1 2016-01-16 19:30:38 2016-01-16 19:44:42               1          2.20
@@ -768,17 +793,19 @@ Since we tested the function in the prior exercise and everything went well, we 
 
 ``` r
 st <- Sys.time()
-rxDataStep(nyc_xdf, nyc_xdf, overwrite = TRUE, transformFunc = find_nhoods, transformPackages = c("sp", 
-    "maptools", "rgeos"), transformObjects = list(shapefile = nyc_shapefile))
+rxDataStep(nyc_xdf, nyc_xdf, overwrite = TRUE, 
+           transformFunc = find_nhoods, 
+           transformPackages = c("sp", "maptools", "rgeos"), 
+           transformObjects = list(shapefile = nyc_shapefile))
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 23.443 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 23.276 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 24.265 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 22.051 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 21.152 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 19.175 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 18.742 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 19.349 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 20.995 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 20.970 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 20.667 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 22.027 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 22.568 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 23.750 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 21.612 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 21.330 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 20.358 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 20.265 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 23.150 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 21.884 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 22.240 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 23.996 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 24.010 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 23.048 seconds
 
 ``` r
 Sys.time() - st
 ```
 
-    ## Time difference of 4.301157 mins
+    ## Time difference of 4.515362 mins
 
 ``` r
 rxGetInfo(nyc_xdf, numRows = 5)

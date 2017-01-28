@@ -19,31 +19,40 @@ Using Manhattan only
 We now narrow our field of vision by focusing on trips that took place inside of Manhattan only, and meet "reasonable" criteria for a trip. Since we added new features to the data, we can also drop some old columns from the data so that the data can be processed faster.
 
 ``` r
-input_xdf <- file.path(data_dir, "yellow_tripdata_2016_clean.xdf")
+input_xdf <- file.path(data_dir, 'yellow_tripdata_2016_clean.xdf')
 mht_xdf <- RxXdfData(input_xdf)
-rxDataStep(nyc_xdf, mht_xdf, rowSelection = (passenger_count > 0 & trip_distance >= 
-    0 & trip_distance < 30 & trip_duration > 0 & trip_duration < 60 * 60 * 24 & str_detect(pickup_borough, 
-    "Manhattan") & str_detect(dropoff_borough, "Manhattan") & !is.na(pickup_nb) & 
-    !is.na(dropoff_nb) & fare_amount > 0), transformPackages = "stringr", varsToDrop = c("extra", 
-    "mta_tax", "improvement_surcharge", "total_amount", "pickup_borough", "dropoff_borough", 
-    "pickup_nhood", "dropoff_nhood"), overwrite = TRUE)
+
+rxDataStep(nyc_xdf, mht_xdf,
+  rowSelection = (passenger_count > 0 &
+                  trip_distance >= 0 & trip_distance < 30 &
+                  trip_duration > 0 & trip_duration < 60*60*24 &
+                  str_detect(pickup_borough, 'Manhattan') &
+                  str_detect(dropoff_borough, 'Manhattan') &
+                  !is.na(pickup_nb) &
+                  !is.na(dropoff_nb) &
+                  fare_amount > 0),
+  transformPackages = "stringr",
+  varsToDrop = c('extra', 'mta_tax', 'improvement_surcharge', 'total_amount', 
+                 'pickup_borough', 'dropoff_borough', 'pickup_nhood', 'dropoff_nhood'),
+  overwrite = TRUE)
 ```
 
-    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 3.592 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 3.533 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 3.551 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 3.289 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 5.084 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 4.516 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 3.338 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 3.193 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 3.178 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 3.232 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 3.180 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 3.189 seconds
+    ## Rows Read: 500000, Total Rows Processed: 500000, Total Chunk Time: 5.097 secondsRows Read: 500000, Total Rows Processed: 1000000, Total Chunk Time: 4.606 secondsRows Read: 500000, Total Rows Processed: 1500000, Total Chunk Time: 3.943 secondsRows Read: 500000, Total Rows Processed: 2000000, Total Chunk Time: 3.601 secondsRows Read: 500000, Total Rows Processed: 2500000, Total Chunk Time: 4.087 secondsRows Read: 500000, Total Rows Processed: 3000000, Total Chunk Time: 3.805 secondsRows Read: 500000, Total Rows Processed: 3500000, Total Chunk Time: 3.565 secondsRows Read: 500000, Total Rows Processed: 4000000, Total Chunk Time: 3.667 secondsRows Read: 500000, Total Rows Processed: 4500000, Total Chunk Time: 3.717 secondsRows Read: 500000, Total Rows Processed: 5000000, Total Chunk Time: 4.042 secondsRows Read: 500000, Total Rows Processed: 5500000, Total Chunk Time: 4.408 secondsRows Read: 500000, Total Rows Processed: 6000000, Total Chunk Time: 3.851 seconds
 
 And since we limited the scope of the data, it might be a good idea to create a sample of the new data (as a `data.frame`). Our last sample, `nyc_sample` was not a good sample, since we only took the top 1000 rows of the data. This time, we use `rxDataStep` to create a random sample of the data, containing only 1 percent of the rows from the larger dataset.
 
 ``` r
-mht_sample <- rxDataStep(mht_xdf, rowSelection = (u < 0.01), transforms = list(u = runif(.rxNumRows)))
+mht_sample <- rxDataStep(mht_xdf, rowSelection = (u < .01),
+transforms = list(u = runif(.rxNumRows)))
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 2.487 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 2.805 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 2.844 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 1.748 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 3.105 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 1.801 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 3.357 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 1.866 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 3.105 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 1.776 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 3.455 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 1.704 seconds
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 3.728 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 4.303 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 4.786 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 3.333 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 7.232 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 3.788 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 5.485 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 2.548 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 5.382 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 3.042 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 4.640 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 3.153 seconds
 
 ``` r
 dim(mht_sample)
 ```
 
-    ## [1] 49585    22
+    ## [1] 49779    22
 
 Visualizing the data
 --------------------
@@ -55,10 +64,17 @@ library(ggmap)
 map_13 <- get_map(location = c(lon = -73.98, lat = 40.76), zoom = 13)
 map_14 <- get_map(location = c(lon = -73.98, lat = 40.76), zoom = 14)
 map_15 <- get_map(location = c(lon = -73.98, lat = 40.76), zoom = 15)
-q1 <- ggmap(map_14) + geom_point(aes(x = dropoff_longitude, y = dropoff_latitude), 
-    data = mht_sample, alpha = 0.15, na.rm = TRUE, col = "red", size = 0.5) + theme_nothing(legend = TRUE)
-q2 <- ggmap(map_15) + geom_point(aes(x = dropoff_longitude, y = dropoff_latitude), 
-    data = mht_sample, alpha = 0.15, na.rm = TRUE, col = "red", size = 0.5) + theme_nothing(legend = TRUE)
+
+q1 <- ggmap(map_14) +
+  geom_point(aes(x = dropoff_longitude, y = dropoff_latitude), data = mht_sample, 
+             alpha = 0.15, na.rm = TRUE, col = "red", size = .5) +
+  theme_nothing(legend = TRUE)
+
+q2 <- ggmap(map_15) +
+  geom_point(aes(x = dropoff_longitude, y = dropoff_latitude), data = mht_sample, 
+             alpha = 0.15, na.rm = TRUE, col = "red", size = .5) +
+  theme_nothing(legend = TRUE)
+
 library(gridExtra)
 grid.arrange(q1, q2, ncol = 2)
 ```
@@ -72,37 +88,44 @@ If the above plots seem too crowded, as an alternative, we could use **k-means c
 
 ``` r
 library(dplyr)
-xydata <- transmute(mht_sample, long_std = dropoff_longitude/-74, lat_std = dropoff_latitude/40)
+xydata <- transmute(mht_sample, 
+                    long_std = dropoff_longitude / -74, 
+                    lat_std = dropoff_latitude / 40)
+
 start_time <- Sys.time()
 rxkm_sample <- kmeans(xydata, centers = 300, iter.max = 2000, nstart = 50)
 Sys.time() - start_time
 ```
 
-    ## Time difference of 33.16876 secs
+    ## Time difference of 39.4524 secs
 
 ``` r
 # we need to put the centroids back into the original scale for coordinates
-centroids_sample <- rxkm_sample$centers %>% as.data.frame %>% transmute(long = long_std * 
-    (-74), lat = lat_std * 40, size = rxkm_sample$size)
+centroids_sample <- rxkm_sample$centers %>%
+  as.data.frame %>%
+  transmute(long = long_std*(-74), lat = lat_std*40, size = rxkm_sample$size)
+
 head(centroids_sample)
 ```
 
     ##        long      lat size
-    ## 1 -73.98725 40.75050  195
-    ## 2 -74.00454 40.75173  213
-    ## 3 -73.98008 40.76487  224
-    ## 4 -73.99684 40.73770  129
-    ## 5 -73.99120 40.73308  134
-    ## 6 -74.01582 40.70565  131
+    ## 1 -73.99594 40.76475  134
+    ## 2 -73.97487 40.75586  248
+    ## 3 -73.98090 40.75954  232
+    ## 4 -73.96406 40.75585  164
+    ## 5 -73.99404 40.76829  139
+    ## 6 -73.99976 40.70952   44
 
 In the above code chunk we used the `kmeans` function to cluster the sample dataset `mht_sample`. In `RevoScaleR`, there is a counterpart to the `kmeans` function called `rxKmeans`, but in addition to working with a `data.frame`, `rxKmeans` also works with XDF files. We can therefore use `rxKmeans` to create clusters from the whole data instead of the sample represented by `mht_sample`.
 
 ``` r
 start_time <- Sys.time()
-rxkm <- rxKmeans(~long_std + lat_std, data = mht_xdf, outFile = mht_xdf, outColName = "dropoff_cluster", 
-    centers = rxkm_sample$centers, transforms = list(long_std = dropoff_longitude/-74, 
-        lat_std = dropoff_latitude/40), blocksPerRead = 1, overwrite = TRUE, maxIterations = 100, 
-    reportProgress = -1)
+rxkm <- rxKmeans( ~ long_std + lat_std, data = mht_xdf, outFile = mht_xdf, 
+                 outColName = "dropoff_cluster", centers = rxkm_sample$centers, 
+                 transforms = list(long_std = dropoff_longitude / -74, 
+                                   lat_std = dropoff_latitude / 40), 
+                 blocksPerRead = 1, overwrite = TRUE, maxIterations = 100, 
+                 reportProgress = -1)
 ```
 
     ## 
@@ -112,32 +135,44 @@ rxkm <- rxKmeans(~long_std + lat_std, data = mht_xdf, outFile = mht_xdf, outColN
 Sys.time() - start_time
 ```
 
-    ## Time difference of 22.77371 mins
+    ## Time difference of 23.5621 mins
 
 ``` r
-clsdf <- cbind(transmute(as.data.frame(rxkm$centers), long = long_std * (-74), lat = lat_std * 
-    40), size = rxkm$size, withinss = rxkm$withinss)
+clsdf <- cbind(
+transmute(as.data.frame(rxkm$centers), long = long_std*(-74), lat = lat_std*40),
+size = rxkm$size, withinss = rxkm$withinss)
+
 head(clsdf)
 ```
 
     ##        long      lat  size     withinss
-    ## 1 -73.98716 40.75038 18190 6.545209e-06
-    ## 2 -74.00512 40.75182 18387 1.206586e-05
-    ## 3 -73.98011 40.76495 22419 7.284716e-06
-    ## 4 -73.99654 40.73778 11709 4.785298e-06
-    ## 5 -73.99134 40.73316 13881 6.052222e-06
-    ## 6 -74.01600 40.70554 14001 1.299688e-05
+    ## 1 -73.99618 40.76468 13526 1.198639e-05
+    ## 2 -73.97512 40.75564 23781 6.395721e-06
+    ## 3 -73.98060 40.75978 25194 1.074318e-05
+    ## 4 -73.96399 40.75580 16694 9.758473e-06
+    ## 5 -73.99389 40.76836 13920 1.577876e-05
+    ## 6 -73.99737 40.71366 10309 1.748464e-05
 
 With a little bit of work, we can extract the cluster centroids from the resulting object and plot them on a similar map. As we can see, the results are not very different, however differences do exist and depending on the use case, such small differences can have a lot of practical significance. If for example we wanted to find out which spots taxis are more likely to drop off passengers and make it illegal for street vendors to operate at those spots (in order to avoid creating too much traffic), we can do a much better job of narrowing down the spots using the clusters created from the whole data.
 
 ``` r
-centroids_whole <- cbind(transmute(as.data.frame(rxkm$centers), long = long_std * 
-    (-74), lat = lat_std * 40), size = rxkm$size, withinss = rxkm$withinss)
-q1 <- ggmap(map_15) + geom_point(data = centroids_sample, aes(x = long, y = lat, 
-    alpha = size), na.rm = TRUE, size = 3, col = "red") + theme_nothing(legend = TRUE) + 
-    labs(title = "centroids using sample data")
-q2 <- ggmap(map_15) + geom_point(data = centroids_whole, aes(x = long, y = lat, alpha = size), 
-    na.rm = TRUE, size = 3, col = "red") + theme_nothing(legend = TRUE) + labs(title = "centroids using whole data")
+centroids_whole <- cbind(transmute(as.data.frame(rxkm$centers), 
+                                   long = long_std*(-74), lat = lat_std*40), 
+                         size = rxkm$size, 
+                         withinss = rxkm$withinss)
+
+q1 <- ggmap(map_15) +
+  geom_point(data = centroids_sample, aes(x = long, y = lat, alpha = size), 
+             na.rm = TRUE, size = 3, col = 'red') +
+  theme_nothing(legend = TRUE) +
+  labs(title = "centroids using sample data")
+
+q2 <- ggmap(map_15) +
+  geom_point(data = centroids_whole, aes(x = long, y = lat, alpha = size), 
+             na.rm = TRUE, size = 3, col = 'red') +
+  theme_nothing(legend = TRUE) +
+  labs(title = "centroids using whole data")
+
 library(gridExtra)
 grid.arrange(q1, q2, ncol = 2)
 ```
@@ -156,7 +191,7 @@ kmeans_nclus <- kmeans(xydata, centers = nclus, iter.max = 2000, nstart = 1)
 sum(kmeans_nclus$withinss)
 ```
 
-    ## [1] 0.0002280311
+    ## [1] 0.0002151076
 
 The number we extracted is the sum of the within-cluster sum of squares for each cluster. The **within-cluster sum of squares** (WSSs for short) is a measure of how much variability there is within each cluster. A lower WSSs indicates a more homogeneous cluster. However, we don't care about this metric per cluster. We simply seek the all the clusters' WSSs. When the number of clusters we build is small, individual clusters are less homogeneous, making the total WSSs larger. When we build a large number of clusters, the opposite is true. Therefore, total WSSs generally drops as `nclus` increases, but there is a point beyond which increasing `nclus` results in smaller and smaller drops in total WSSs. In other words, a point beyond which building a higher number of clusters is not worth the cost of increased complexity (as having more clusters makes it hard to tell them apart).
 
@@ -174,17 +209,18 @@ nclus_seq <- seq(20, 1000, by = 50)
 
 ``` r
 find_wss <- function(nclus, ...) {
-    st <- Sys.time()
-    res <- sum(kmeans(centers = nclus, ...)$withinss)
-    print(sprintf("nclus = %d, runtime = %3.2f seconds", nclus, Sys.time() - st))
-    res
+st <- Sys.time()
+res <- sum(kmeans(centers = nclus, ...)$withinss)
+print(sprintf("nclus = %d, runtime = %3.2f seconds", nclus, Sys.time() - st))
+res
 }
+
 find_wss(nclus = 10, x = xydata, iter.max = 500, nstart = 1)
 ```
 
     ## [1] "nclus = 10, runtime = 0.17 seconds"
 
-    ## [1] 0.001265202
+    ## [1] 0.001290193
 
 1.  We use `sapply` to run the above function in a loop. This makes the notation more clean and easy to modify. We then use `ggplot2` to plot the results. Another interesting to notice is that `nclus` goes up, the function takes longer and longer to run. This has implications on building the clusters on the whole data: the number of clusters we want to build can significantly add to the runtime.
 
@@ -192,31 +228,33 @@ find_wss(nclus = 10, x = xydata, iter.max = 500, nstart = 1)
 wss <- sapply(nclus_seq, find_wss, x = xydata, iter.max = 500, nstart = 1)
 ```
 
-    ## [1] "nclus = 20, runtime = 0.27 seconds"
-    ## [1] "nclus = 70, runtime = 0.63 seconds"
-    ## [1] "nclus = 120, runtime = 0.37 seconds"
-    ## [1] "nclus = 170, runtime = 0.65 seconds"
-    ## [1] "nclus = 220, runtime = 0.56 seconds"
-    ## [1] "nclus = 270, runtime = 0.45 seconds"
-    ## [1] "nclus = 320, runtime = 0.62 seconds"
-    ## [1] "nclus = 370, runtime = 0.72 seconds"
-    ## [1] "nclus = 420, runtime = 0.58 seconds"
-    ## [1] "nclus = 470, runtime = 0.81 seconds"
-    ## [1] "nclus = 520, runtime = 0.84 seconds"
-    ## [1] "nclus = 570, runtime = 0.83 seconds"
-    ## [1] "nclus = 620, runtime = 0.87 seconds"
-    ## [1] "nclus = 670, runtime = 0.88 seconds"
-    ## [1] "nclus = 720, runtime = 1.13 seconds"
-    ## [1] "nclus = 770, runtime = 1.05 seconds"
-    ## [1] "nclus = 820, runtime = 1.02 seconds"
-    ## [1] "nclus = 870, runtime = 1.15 seconds"
-    ## [1] "nclus = 920, runtime = 1.21 seconds"
-    ## [1] "nclus = 970, runtime = 1.44 seconds"
+    ## [1] "nclus = 20, runtime = 0.37 seconds"
+    ## [1] "nclus = 70, runtime = 0.36 seconds"
+    ## [1] "nclus = 120, runtime = 0.51 seconds"
+    ## [1] "nclus = 170, runtime = 0.49 seconds"
+    ## [1] "nclus = 220, runtime = 0.64 seconds"
+    ## [1] "nclus = 270, runtime = 0.58 seconds"
+    ## [1] "nclus = 320, runtime = 0.64 seconds"
+    ## [1] "nclus = 370, runtime = 0.67 seconds"
+    ## [1] "nclus = 420, runtime = 0.70 seconds"
+    ## [1] "nclus = 470, runtime = 0.78 seconds"
+    ## [1] "nclus = 520, runtime = 0.83 seconds"
+    ## [1] "nclus = 570, runtime = 0.87 seconds"
+    ## [1] "nclus = 620, runtime = 0.85 seconds"
+    ## [1] "nclus = 670, runtime = 0.93 seconds"
+    ## [1] "nclus = 720, runtime = 0.94 seconds"
+    ## [1] "nclus = 770, runtime = 1.08 seconds"
+    ## [1] "nclus = 820, runtime = 1.14 seconds"
+    ## [1] "nclus = 870, runtime = 1.19 seconds"
+    ## [1] "nclus = 920, runtime = 1.02 seconds"
+    ## [1] "nclus = 970, runtime = 1.20 seconds"
 
 ``` r
 library(ggplot2)
-ggplot(aes(x = x, y = y), data = data.frame(x = nclus_seq, y = wss)) + geom_line() + 
-    xlab("number of clusters") + ylab("within clusters sum of squares")
+ggplot(aes(x = x, y = y), data = data.frame(x = nclus_seq, y = wss)) +
+  geom_line() +
+  xlab("number of clusters") +
+  ylab("within clusters sum of squares")
 ```
 
 ![](images/unnamed-chunk-10-1.png)

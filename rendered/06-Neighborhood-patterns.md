@@ -26,22 +26,23 @@ Let's see what this means in action: We start by using `rxCrossTabs` to get sums
 rxct <- rxCrossTabs(trip_distance ~ pickup_nb:dropoff_nb, mht_xdf)
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.034 seconds
-    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.034 seconds
-    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.042 seconds
-    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.036 seconds
-    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.035 seconds
-    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.037 seconds
-    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.035 seconds
-    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.034 seconds
-    ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.033 seconds
-    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.034 seconds
-    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.033 seconds
-    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.033 seconds 
-    ## Computation time: 0.434 seconds.
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.027 seconds
+    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.027 seconds
+    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.025 seconds
+    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.030 seconds
+    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.027 seconds 
+    ## Computation time: 0.341 seconds.
 
 ``` r
-res <- rxct$sums$trip_distance/rxct$counts$trip_distance
+res <- rxct$sums$trip_distance / rxct$counts$trip_distance
+
 library(seriation)
 res[which(is.nan(res))] <- mean(res, na.rm = TRUE)
 nb_order <- seriate(res)
@@ -53,69 +54,72 @@ We will use `nb_order` in a little while, but before we do so, let's use `rxCube
 rxc1 <- rxCube(trip_distance ~ pickup_nb:dropoff_nb, mht_xdf)
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.032 seconds
-    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.031 seconds
-    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.032 seconds
-    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.030 seconds
+    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.030 seconds
+    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.032 seconds
+    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.032 seconds
+    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.033 seconds
     ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.032 seconds
-    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.028 seconds 
-    ## Computation time: 0.375 seconds.
+    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.029 seconds
+    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.027 seconds 
+    ## Computation time: 0.377 seconds.
 
 ``` r
-rxc2 <- rxCube(minutes_per_mile ~ pickup_nb:dropoff_nb, mht_xdf, transforms = list(minutes_per_mile = (trip_duration/60)/trip_distance))
+rxc2 <- rxCube(minutes_per_mile ~ pickup_nb:dropoff_nb, mht_xdf, 
+               transforms = list(minutes_per_mile = (trip_duration/60)/trip_distance))
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.176 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.177 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.065 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.174 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.064 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.173 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.065 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.066 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.064 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.066 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.175 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.069 seconds 
-    ## Computation time: 1.377 seconds.
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.179 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.190 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.067 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.178 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.066 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.176 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.068 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.065 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.073 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.097 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.191 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.065 seconds 
+    ## Computation time: 1.459 seconds.
 
 ``` r
 rxc3 <- rxCube(tip_percent ~ pickup_nb:dropoff_nb, mht_xdf)
 ```
 
     ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.023 seconds
-    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.023 seconds
-    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.023 seconds
-    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.025 seconds
-    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.027 seconds
-    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.027 seconds
+    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.023 seconds
+    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.028 seconds
+    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.028 seconds
     ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.025 seconds
-    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.024 seconds 
-    ## Computation time: 0.305 seconds.
+    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.025 seconds 
+    ## Computation time: 0.316 seconds.
 
 ``` r
 library(dplyr)
 res <- bind_cols(list(rxc1, rxc2, rxc3))
-res <- res[, c("pickup_nb", "dropoff_nb", "trip_distance", "minutes_per_mile", "tip_percent")]
+res <- res[ , c('pickup_nb', 'dropoff_nb', 'trip_distance', 'minutes_per_mile', 'tip_percent')]
 head(res)
 ```
 
     ## # A tibble: 6 × 5
-    ##            pickup_nb dropoff_nb trip_distance minutes_per_mile tip_percent
-    ##               <fctr>     <fctr>         <dbl>            <dbl>       <dbl>
-    ## 1          Chinatown  Chinatown     0.9096218         14.32784    7.581197
-    ## 2            Tribeca  Chinatown     0.8093653         12.48780   11.774850
-    ## 3       Little Italy  Chinatown     0.6679070         10.88578   14.949612
-    ## 4 Financial District  Chinatown     1.2334083         11.87216   10.684413
-    ## 5    Lower East Side  Chinatown     0.8425093         17.11992   12.135656
-    ## 6               Soho  Chinatown     0.9231484         15.33047   12.708738
+    ##       pickup_nb   dropoff_nb trip_distance minutes_per_mile tip_percent
+    ##          <fctr>       <fctr>         <dbl>            <dbl>       <dbl>
+    ## 1  West Village West Village     0.6791656        11.389156    15.12896
+    ## 2  East Village West Village     1.5436656         8.852361    15.30936
+    ## 3  Battery Park West Village     1.9594276         6.371966    16.01990
+    ## 4 Carnegie Hill West Village     5.5731081         5.305094    14.83784
+    ## 5      Gramercy West Village     1.5818507         8.298627    15.85645
+    ## 6          Soho West Village     1.1297525         9.282627    15.89446
 
 We can start plotting the above results to see some interesting trends.
 
 ``` r
 library(ggplot2)
-ggplot(res, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = trip_distance), colour = "white") + 
-    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + scale_fill_gradient(low = "white", 
-    high = "steelblue") + coord_fixed(ratio = 0.9)
+ggplot(res, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = trip_distance), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-3-1.png)
@@ -126,9 +130,12 @@ The problem with the above plot is the order of the neighborhoods (which is alph
 newlevs <- levels(res$pickup_nb)[unlist(nb_order)]
 res$pickup_nb <- factor(res$pickup_nb, levels = unique(newlevs))
 res$dropoff_nb <- factor(res$dropoff_nb, levels = unique(newlevs))
-ggplot(res, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = trip_distance), colour = "white") + 
-    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + scale_fill_gradient(low = "white", 
-    high = "steelblue") + coord_fixed(ratio = 0.9)
+
+ggplot(res, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = trip_distance), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-4-1.png)
@@ -139,9 +146,11 @@ Neighborhood trends
 Since trip distances remain fix, but trip duration mostly is a function of how much traffic there is, we can plot a look at the same plot as the above, but for the `minutes_per_mile` column, which will give us an idea of which neighborhoods have the most traffic between them.
 
 ``` r
-ggplot(res, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = minutes_per_mile), 
-    colour = "white") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-    scale_fill_gradient(low = "white", high = "steelblue") + coord_fixed(ratio = 0.9)
+ggplot(res, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = minutes_per_mile), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-5-1.png)
@@ -149,9 +158,12 @@ ggplot(res, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = minutes_per_mile)
 Another interesting question to consider is the relationship between the fare amount and how much passengers tip in relation to which neighborhoods they travel between. We create another plot similar to the ones above, showing fare amount on a gray background color scale, and displaying how much passengers tipped on average for the trip. To make it easier to visually see patterns in tipping behavior, we color-code the average tip based on some predetermined cut-offs.
 
 ``` r
-res %>% mutate(tip_color = cut(tip_percent, c(0, 8, 12, 15, 100))) %>% ggplot(aes(pickup_nb, 
-    dropoff_nb)) + geom_tile(aes(fill = tip_color)) + theme(axis.text.x = element_text(angle = 60, 
-    hjust = 1)) + coord_fixed(ratio = 0.9)
+res %>%
+  mutate(tip_color = cut(tip_percent, c(0, 8, 12, 15, 100))) %>%
+  ggplot(aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = tip_color)) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-6-1.png)
@@ -174,17 +186,22 @@ We changed the order of the factor levels for `pickup_nb` and `dropoff_nb` to dr
 
 ``` r
 # first way of reordering the factor levels
-rxDataStep(inData = mht_xdf, outFile = mht_xdf, transforms = list(pickup_nb = factor(pickup_nb, 
-    levels = newlevels), dropoff_nb = factor(dropoff_nb, levels = newlevels)), transformObjects = list(newlevels = unique(newlevs)), 
-    overwrite = TRUE)
+rxDataStep(inData = mht_xdf, outFile = mht_xdf, 
+    transforms = list(
+        pickup_nb = factor(pickup_nb, levels = newlevels), 
+        dropoff_nb = factor(dropoff_nb, levels = newlevels)), 
+    transformObjects = list(newlevels = unique(newlevs)), overwrite = TRUE)
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 4.287 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 4.260 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 3.733 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 3.513 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 3.842 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 3.624 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 3.903 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 3.376 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 4.008 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 3.661 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 3.785 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 3.520 seconds
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 4.404 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 4.294 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 3.712 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 3.522 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 3.824 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 3.531 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 3.901 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 3.762 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 4.310 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 3.892 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 4.794 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 3.813 seconds
 
 ``` r
 # second way of reordering the factor levels
-rxFactors(mht_xdf, outFile = mht_xdf, factorInfo = list(pickup_nb = list(newLevels = unique(newlevs)), 
-    dropoff_nb = list(newLevels = unique(newlevs))), overwrite = TRUE)
+rxFactors(mht_xdf, outFile = mht_xdf, 
+    factorInfo = list(
+        pickup_nb = list(newLevels = unique(newlevs)), 
+        dropoff_nb = list(newLevels = unique(newlevs))), 
+    overwrite = TRUE)
 ```
 
 Total and marginal distribution trips between neighborhoods
@@ -195,29 +212,36 @@ Let's focus our attention now the following important questions: - Between which
 To answer the above questions, we need to find the distribution (or proportion) of trips between any two neighborhoods, first as a percentage of total trips, then as a percentage of trips *leaving from* a particular neighborhood, and finally as a percentage of trips *going to* a particular neighborhood.
 
 ``` r
-rxc <- rxCube(~pickup_nb:dropoff_nb, mht_xdf)
+rxc <- rxCube( ~ pickup_nb:dropoff_nb, mht_xdf)
 ```
 
     ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.014 seconds
-    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.014 seconds
-    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.017 seconds
-    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.015 seconds
-    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.018 seconds
-    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.016 seconds
-    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.016 seconds
-    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.016 seconds
+    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.015 seconds
+    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.016 seconds
+    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.016 seconds
+    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.015 seconds
+    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.014 seconds
+    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.017 seconds
+    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.014 seconds
     ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.016 seconds
-    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.016 seconds
-    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.018 seconds
-    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.018 seconds 
-    ## Computation time: 0.201 seconds.
+    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.017 seconds
+    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.016 seconds
+    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.017 seconds 
+    ## Computation time: 0.194 seconds.
 
 ``` r
 rxc <- as.data.frame(rxc)
-rxcs <- rxc %>% filter(Counts > 0) %>% mutate(pct_all = Counts/sum(Counts) * 100) %>% 
-    group_by(pickup_nb) %>% mutate(pct_by_pickup_nb = Counts/sum(Counts) * 100) %>% 
-    group_by(dropoff_nb) %>% mutate(pct_by_dropoff_nb = Counts/sum(Counts) * 100) %>% 
-    group_by() %>% arrange(desc(Counts))
+
+rxc %>%
+  filter(Counts > 0) %>%
+  mutate(pct_all = Counts/sum(Counts) * 100) %>%
+  group_by(pickup_nb) %>%
+  mutate(pct_by_pickup_nb = Counts/sum(Counts) * 100) %>%
+  group_by(dropoff_nb) %>%
+  mutate(pct_by_dropoff_nb = Counts/sum(Counts) * 100) %>%
+  group_by() %>%
+  arrange(desc(Counts)) -> rxcs
+
 head(rxcs)
 ```
 
@@ -237,9 +261,11 @@ Based on the first row, we can see that trips from the Upper East Side to the Up
 We can take the above numbers and display them in plots that make it easier to digest it all at once. We begin with a plot showing how taxi trips between any pair of neighborhoods are distributed.
 
 ``` r
-ggplot(rxcs, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = pct_all), colour = "white") + 
-    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + scale_fill_gradient(low = "white", 
-    high = "black") + coord_fixed(ratio = 0.9)
+ggplot(rxcs, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = pct_all), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "black") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-10-1.png)
@@ -249,9 +275,11 @@ The plot shows that trips to and from the Upper East Side make up the majority o
 Next we look at how trips leaving a particular neighborhood (a point on the x-axis in the plot below), "spill out" into other neighborhoods (shown by the vertical color gradient along the y-axis at each point on the x-axis).
 
 ``` r
-ggplot(rxcs, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = pct_by_pickup_nb), 
-    colour = "white") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-    scale_fill_gradient(low = "white", high = "steelblue") + coord_fixed(ratio = 0.9)
+ggplot(rxcs, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = pct_by_pickup_nb), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-11-1.png)
@@ -261,9 +289,11 @@ We can see how most downtown trips are to other downtown neighborhoods or to mid
 For a trip ending at a particular neighborhood (represented by a point on the y-axis) we now look at the distribution of where the trip originated from (the horizontal color-gradient along the x-axis for each point on the y-axis).
 
 ``` r
-ggplot(rxcs, aes(pickup_nb, dropoff_nb)) + geom_tile(aes(fill = pct_by_dropoff_nb), 
-    colour = "white") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-    scale_fill_gradient(low = "white", high = "red") + coord_fixed(ratio = 0.9)
+ggplot(rxcs, aes(pickup_nb, dropoff_nb)) +
+  geom_tile(aes(fill = pct_by_dropoff_nb), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "red") +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-12-1.png)
@@ -275,8 +305,9 @@ As we can see, a lot of trips claim Midtown regardless of where they ended. The 
 Let's return to one of the questions we asked in the last section: Assuming that a traveler leaves from a given neighborhood, which neighborhoods are they most likely to go to? To answer this question, in we obtained the proportion of trips that fan out into all the different neighborhoods, given that they all start from the same neighborhood. The results are stored in the `rxcs` data. If we sort the data and keep only the relevant columns, it's easier to make sense of it:
 
 ``` r
-rxcs %>% select(pickup_nb, dropoff_nb, pct = pct_by_pickup_nb) %>% arrange(pickup_nb, 
-    desc(pct))
+rxcs %>%
+  select(pickup_nb, dropoff_nb, pct = pct_by_pickup_nb) %>%
+  arrange(pickup_nb, desc(pct))
 ```
 
     ## # A tibble: 778 × 3
@@ -315,7 +346,7 @@ nb_drop <- ## pull the most common destinations for this neighborhood from `rxcs
 pickup_df <- rxDataStep(mht_xdf, # we leave out outFile and store results in pickup_df
   rowSelection = ## select the relevant subset of the data
   varsToKeep = c("dropoff_nb", "pickup_datetime"),
-  transformObjects = ## a list, used to pass `nb_name` and `nb_drop` to the rowSelection argument
+  transformObjects = ## a list, used to pass `nb_name` and `nb_drop` to rowSelection
   )
 ```
 
@@ -323,9 +354,11 @@ pickup_df <- rxDataStep(mht_xdf, # we leave out outFile and store results in pic
 
 ``` r
 library(lubridate)
-pickup_df %>% mutate(pickup_hour = hour(ymd_hms(pickup_datetime, tz = "UTC"))) %>% 
-    ggplot(aes(x = pickup_hour, fill = dropoff_nb)) + geom_bar(position = "stack", 
-    stat = "count") + scale_fill_discrete(guide = guide_legend(reverse = TRUE))
+pickup_df %>%
+  mutate(pickup_hour = hour(ymd_hms(pickup_datetime, tz = "UTC"))) %>%
+  ggplot(aes(x = pickup_hour, fill = dropoff_nb)) +
+  geom_bar(position = "stack", stat = "count") +
+  scale_fill_discrete(guide = guide_legend(reverse = TRUE))
 ```
 
 ### Solutions
@@ -333,9 +366,13 @@ pickup_df %>% mutate(pickup_hour = hour(ymd_hms(pickup_datetime, tz = "UTC"))) %
 1.  The easiest way to get the cumulative sum is using the built-in `cumsum` function, but we need to group the data by `pickup_nb` before applying it. Finally, we use `filter` to get on the top destination neighborhoods. The condition `pct > 5` will give us only those neighborhoods that are a destination at least 5% of the time, and the condition `(cumpct <= 50 | (cumpct > 50 & lag(cumpct) <= 50))` will stop us once the destinations together account for more than 50 percent of trips.
 
 ``` r
-rxcs_tops <- rxcs %>% select(pickup_nb, dropoff_nb, pct = pct_by_pickup_nb) %>% arrange(pickup_nb, 
-    desc(pct)) %>% group_by(pickup_nb) %>% mutate(cumpct = cumsum(pct)) %>% filter(pct > 
-    5 & (cumpct <= 50 | (cumpct > 50 & lag(cumpct) <= 50))) %>% as.data.frame
+rxcs %>%
+  select(pickup_nb, dropoff_nb, pct = pct_by_pickup_nb) %>%
+  arrange(pickup_nb, desc(pct)) %>%
+  group_by(pickup_nb) %>%
+  mutate(cumpct = cumsum(pct)) %>%
+  filter(pct > 5 & (cumpct <= 50 | (cumpct > 50 & lag(cumpct) <= 50))) %>%
+  as.data.frame -> rxcs_tops
 ```
 
 1.  We can use `subset` to extract the top drop-off neighborhoods for a given pick-up neighborhood. We use `drop = TRUE` the results into a vector. In the `rxDataStep` call, we can pass the two objects `nb_name` and `nb_drop` to the `rowSelection` argument by using `transformObjects` which is simply a *named list*. One quirk that we must be aware of here is that the objects (`nb_name` and `nb_drop`) must be renamed and the new names (`nb` and `top_drop_for_nb` respectively) go into `rowSelection`.
@@ -343,22 +380,27 @@ rxcs_tops <- rxcs %>% select(pickup_nb, dropoff_nb, pct = pct_by_pickup_nb) %>% 
 ``` r
 nb_name <- "West Village"
 nb_drop <- subset(rxcs_tops, pickup_nb == nb_name, select = "dropoff_nb", drop = TRUE)
-pickup_df <- rxDataStep(mht_xdf, rowSelection = pickup_nb == nb & dropoff_nb %in% 
-    top_drop_for_nb, varsToKeep = c("dropoff_nb", "pickup_datetime"), transformObjects = list(nb = nb_name, 
-    top_drop_for_nb = nb_drop))
+
+pickup_df <- rxDataStep(mht_xdf,
+  rowSelection = pickup_nb == nb & dropoff_nb %in% top_drop_for_nb,
+  varsToKeep = c("dropoff_nb", "pickup_datetime"),
+  transformObjects = list(nb = nb_name, top_drop_for_nb = nb_drop))
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.743 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.794 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.719 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.966 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.752 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.927 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.971 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.961 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 1.343 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.662 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.652 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.864 seconds
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.995 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.717 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.740 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.941 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.861 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.882 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.921 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.741 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 1.511 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.714 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.671 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.741 seconds
 
 1.  We simply need to change `position = "stack"` to `position = "fill"`. However, since the y-axis is mislabeled, we use `scale_y_continuous(labels = percent_format())` and `ylab("percent")` to properly format and label the y-axis.
 
 ``` r
 library(scales)
 library(lubridate)
-pickup_df %>% mutate(pickup_hour = hour(ymd_hms(pickup_datetime, tz = "UTC"))) %>% 
-    ggplot(aes(x = pickup_hour, fill = dropoff_nb)) + geom_bar(position = "fill", 
-    stat = "count") + scale_fill_discrete(guide = guide_legend(reverse = TRUE)) + 
-    scale_y_continuous(labels = percent_format()) + ylab("percent")
+pickup_df %>%
+  mutate(pickup_hour = hour(ymd_hms(pickup_datetime, tz = "UTC"))) %>%
+  ggplot(aes(x = pickup_hour, fill = dropoff_nb)) +
+  geom_bar(position = "fill", stat = "count") +
+  scale_fill_discrete(guide = guide_legend(reverse = TRUE)) +
+  scale_y_continuous(labels = percent_format()) +
+  ylab("percent")
 ```
 
 ![](images/unnamed-chunk-18-1.png)
@@ -373,34 +415,39 @@ res1 <- rxCube(tip_percent ~ pickup_dow:pickup_hour, mht_xdf)
 ```
 
     ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.025 seconds
-    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.025 seconds
-    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.023 seconds
-    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.024 seconds
-    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.024 seconds
+    ## Rows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.033 seconds
+    ## Rows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.032 seconds
+    ## Rows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.027 seconds
+    ## Rows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.031 seconds
+    ## Rows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.027 seconds
     ## Rows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.026 seconds
-    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.025 seconds
-    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.030 seconds
-    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.032 seconds 
-    ## Computation time: 0.322 seconds.
+    ## Rows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.026 seconds
+    ## Rows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.028 seconds 
+    ## Computation time: 0.349 seconds.
 
 ``` r
 res2 <- rxCube(fare_amount/(trip_duration/60) ~ pickup_dow:pickup_hour, mht_xdf)
 ```
 
-    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.055 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.066 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.079 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.074 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.071 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.079 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.083 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.201 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.083 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.076 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.078 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.073 seconds 
-    ## Computation time: 1.065 seconds.
+    ## Rows Read: 412183, Total Rows Processed: 412183, Total Chunk Time: 0.064 secondsRows Read: 412015, Total Rows Processed: 824198, Total Chunk Time: 0.087 secondsRows Read: 410320, Total Rows Processed: 1234518, Total Chunk Time: 0.095 secondsRows Read: 410440, Total Rows Processed: 1644958, Total Chunk Time: 0.112 secondsRows Read: 414263, Total Rows Processed: 2059221, Total Chunk Time: 0.102 secondsRows Read: 413976, Total Rows Processed: 2473197, Total Chunk Time: 0.101 secondsRows Read: 413956, Total Rows Processed: 2887153, Total Chunk Time: 0.111 secondsRows Read: 414679, Total Rows Processed: 3301832, Total Chunk Time: 0.091 secondsRows Read: 418308, Total Rows Processed: 3720140, Total Chunk Time: 0.086 secondsRows Read: 418648, Total Rows Processed: 4138788, Total Chunk Time: 0.163 secondsRows Read: 415550, Total Rows Processed: 4554338, Total Chunk Time: 0.063 secondsRows Read: 415475, Total Rows Processed: 4969813, Total Chunk Time: 0.064 seconds 
+    ## Computation time: 1.181 seconds.
 
 ``` r
-names(res2)[3] <- "fare_per_minute"
+names(res2)[3] <- 'fare_per_minute'
 res <- bind_cols(list(res1, res2))
-res <- res[, c("pickup_dow", "pickup_hour", "fare_per_minute", "tip_percent", "Counts")]
-ggplot(res, aes(pickup_dow, pickup_hour)) + geom_tile(aes(fill = fare_per_minute), 
-    colour = "white") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-    scale_fill_gradient(low = "white", high = "steelblue") + geom_text(aes(label = sprintf("%dK riders\n (%d%% tip)", 
-    signif(Counts/1000, 2), round(tip_percent, 0))), size = 2.5) + coord_fixed(ratio = 0.9)
+res <- res[ , c('pickup_dow', 'pickup_hour', 'fare_per_minute', 'tip_percent', 'Counts')]
+
+ggplot(res, aes(pickup_dow, pickup_hour)) +
+  geom_tile(aes(fill = fare_per_minute), colour = "white") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  geom_text(aes(label = sprintf('%dK riders\n (%d%% tip)', 
+                                signif(Counts/1000, 2), round(tip_percent, 0))), 
+            size = 2.5) +
+  coord_fixed(ratio = .9)
 ```
 
 ![](images/unnamed-chunk-19-1.png)

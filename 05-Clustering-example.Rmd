@@ -46,8 +46,7 @@ rxDataStep(nyc_xdf, mht_xdf,
 And since we limited the scope of the data, it might be a good idea to create a sample of the new data (as a `data.frame`). Our last sample, `nyc_sample` was not a good sample, since we only took the top 1000 rows of the data. This time, we use `rxDataStep` to create a random sample of the data, containing only 1 percent of the rows from the larger dataset.
 
 ```{r}
-mht_sample <- rxDataStep(mht_xdf, rowSelection = (u < .01),
-transforms = list(u = runif(.rxNumRows)))
+mht_sample <- rxDataStep(mht_xdf, rowSelection = (u < .01), transforms = list(u = runif(.rxNumRows)))
 
 dim(mht_sample)
 ```

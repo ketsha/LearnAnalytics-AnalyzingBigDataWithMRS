@@ -110,7 +110,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"snapshot": true
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "kssparkpool",
+						"type": "BigDataPoolReference"
+					}
 				}
 			}
 		],

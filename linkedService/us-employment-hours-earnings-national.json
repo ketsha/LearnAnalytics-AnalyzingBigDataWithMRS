@@ -1,0 +1,12 @@
+{
+	"name": "us-employment-hours-earnings-national",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://azureopendatastorage.blob.core.windows.net/laborstatisticscontainer/ehe_national/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VARUI4Q0EwN0ItQzMwNy00NzFGLUIyRjItMTQ0OUQ0MTBEOUQ4XzliMjRlMmM0LTNkNGItNDJhZC1hMWU5LTYxZTM5NWNkMDYyYiINCn0="
+		}
+	}
+}

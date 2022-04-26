@@ -1,0 +1,17 @@
+{
+	"name": "ksTrigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2022-04-26T22:48:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

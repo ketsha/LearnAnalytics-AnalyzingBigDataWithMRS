@@ -1,0 +1,25 @@
+{
+	"name": "kslakedb",
+	"properties": {
+		"Name": "kslakedb",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://kssynapsedtalkegen2filesyatem@kssynapsedtalkegen2acct.dfs.core.windows.net/kslakedb",
+			"Properties": {
+				"FormatType": "csv",
+				"LinkedServiceName": "ks-synapse-wkspace-WorkspaceDefaultStorage"
+			}
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 7,
+		"ObjectId": "abd0a007-2e51-4598-a103-043819a88970"
+	},
+	"type": "DATABASE"
+}

@@ -1,0 +1,12 @@
+{
+	"name": "us-consumer-price-index",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://azureopendatastorage.blob.core.windows.net/laborstatisticscontainer/cpi/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VARUI4Q0EwN0ItQzMwNy00NzFGLUIyRjItMTQ0OUQ0MTBEOUQ4Xzc3OTg3NzQ1LWNhZGQtNDU2Yi1iYjQ4LTJlMDgwNTFlYjM3NyINCn0="
+		}
+	}
+}

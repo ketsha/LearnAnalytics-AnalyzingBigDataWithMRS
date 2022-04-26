@@ -39,13 +39,19 @@
 				"inputs": [
 					{
 						"referenceName": "SourceDataLake",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"SourceContainerName": "\"Dataverse Container Name\""
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "DestinationDataLake",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"DestinationContainerName": "\"Destination Container Name\""
+						}
 					}
 				]
 			}

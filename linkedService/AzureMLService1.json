@@ -1,0 +1,17 @@
+{
+	"name": "AzureMLService1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMLService",
+		"typeProperties": {
+			"subscriptionId": "35e1448d-7744-4a0b-abb8-1d2aae54dc0a",
+			"resourceGroupName": "ks-cor-loan-deploy",
+			"mlWorkspaceName": "loandemoML",
+			"authentication": "MSI"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
